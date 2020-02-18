@@ -6,11 +6,11 @@ using rss_feed.Services.Interfaces;
 namespace rss_feed.Controllers {
     [ApiController]
     public class RssController : Controller {
-        private readonly string _rssLink;
+        private readonly string[] _rssLink;
         private readonly IArticlesLoaderService _articlesLoaderService;
         
         public RssController(IConfigLoaderService configLoaderService, IArticlesLoaderService articlesLoaderService) {
-            _rssLink = configLoaderService.GetConfiguration().RssLink;
+            _rssLink = configLoaderService.GetConfiguration().RssLinks;
             _articlesLoaderService = articlesLoaderService;
         }
 

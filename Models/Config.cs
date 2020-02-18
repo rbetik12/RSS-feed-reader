@@ -2,13 +2,10 @@ using System.Xml.Serialization;
 
 namespace rss_feed.Models {
     public class Config {
-        [XmlElement(DataType = "string")]
-        public string RssLink { get; set; }
-        [XmlElement(DataType = "string")]
         public string RefreshFrequency { get; set; }
-
-        public Config(string link, string refreshFrequency) {
-            RssLink = link;
+        public string[] RssLinks { get; set; }
+        public Config(string[] link, string refreshFrequency) {
+            RssLinks = link;
             RefreshFrequency = refreshFrequency;
         }
 
@@ -16,7 +13,11 @@ namespace rss_feed.Models {
         }
 
         public override string ToString() {
-            return RssLink + " " + RefreshFrequency;
+            string links = "";
+            foreach (var link in RssLinks) {
+                links += link + '\n';
+            }
+            return links + '\n' + RefreshFrequency;
         }
     }
 }
