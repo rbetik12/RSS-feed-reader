@@ -1,0 +1,7 @@
+<div>
+    <div *ngFor="let article of articles; let i = index">
+        <h1 (click)="onTitleClick(i)">{{article.title}}</h1>
+        <p>{{article.pubDate}}</p>
+        <p>{{article.description}}</p>
+    </div>
+</div>

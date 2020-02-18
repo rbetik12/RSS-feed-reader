@@ -1,0 +1,19 @@
+<form [formGroup]="settingsForm" (submit)="saveConfig()">
+    <div>
+        <div>Rss feed link</div>
+        <input name="link" formControlName="link"> <br>
+        <div>Refresh interval (In hours)</div>
+        <input name="frequency" formControlName="refreshRate"> <br>
+        <button type="submit" [disabled]="!settingsForm.valid">Save</button>
+    </div>
+</form>
+
+<div>
+    <h4>RSS feed URL:</h4>
+    {{config.rssLink}}
+</div>
+
+<div>
+    <h4>Update rate:</h4>
+    {{config.refreshFrequency}}
+</div>

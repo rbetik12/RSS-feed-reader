@@ -1,0 +1,7 @@
+h1:hover {
+    text-decoration: underline;
+}
+
+h1:active {
+    color: #9c27b0;
+}
