@@ -1,4 +1,4 @@
 export interface ConfigModel {
-    rssLink: string;
+    rssLinks: string[];
     refreshFrequency: number;
 }
