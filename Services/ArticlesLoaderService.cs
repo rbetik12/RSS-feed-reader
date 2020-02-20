@@ -6,26 +6,27 @@ using rss_feed.Services.Interfaces;
 
 namespace rss_feed.Services {
     public class ArticlesLoaderService : IArticlesLoaderService {
-        public List<Item> LoadArticles(string url) {
+        public List<Item> LoadArticles(string[] urls) {
             var articles = new List<Item>();
-            var rss = new XmlDocument();
-            try {
-                rss.Load(url);
-            }
-            catch (Exception e) {
-                Console.WriteLine(e.Message);
-                return null;
-            }
+            foreach (var url in urls) {
+                var rss = new XmlDocument();
+                try {
+                    rss.Load(url);
+                }
+                catch (Exception e) {
+                    Console.WriteLine(e.Message);
+                    continue;
+                }
 
-            var nodes = rss.GetElementsByTagName("item");
-            foreach (XmlElement node in nodes) {
-                var title = node.GetElementsByTagName("title")[0].InnerText;
-                var link = node.GetElementsByTagName("link")[0].InnerText;
-                var description = node.GetElementsByTagName("description")[0].InnerText;
-                var pubDate = node.GetElementsByTagName("pubDate")[0].InnerText;
-                articles.Add(new Item(DateTime.Parse(pubDate), title, RemoveHTMLTags(description), link));
+                var nodes = rss.GetElementsByTagName("item");
+                foreach (XmlElement node in nodes) {
+                    var title = node.GetElementsByTagName("title")[0].InnerText;
+                    var link = node.GetElementsByTagName("link")[0].InnerText;
+                    var description = node.GetElementsByTagName("description")[0].InnerText;
+                    var pubDate = node.GetElementsByTagName("pubDate")[0].InnerText;
+                    articles.Add(new Item(DateTime.Parse(pubDate), title, RemoveHTMLTags(description), link));
+                }
             }
-
             return articles;
         }
 

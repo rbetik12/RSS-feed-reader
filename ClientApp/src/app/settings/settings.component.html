@@ -4,13 +4,16 @@
         <input name="link" formControlName="link"> <br>
         <div>Refresh interval (In hours)</div>
         <input name="frequency" formControlName="refreshRate"> <br>
-        <button type="submit" [disabled]="!settingsForm.valid">Save</button>
+        <button type="submit" [disabled]="!settingsForm.valid">Update</button>
     </div>
 </form>
 
 <div>
-    <h4>RSS feed URL:</h4>
-    {{config.rssLink}}
+        <h4>RSS feed URL:</h4>
+        <div *ngFor="let link of config.rssLinks; let i = index">
+            {{link}}
+            <span class="delete-button" (click)="delete(i)">Delete</span>
+        </div>
 </div>
 
 <div>

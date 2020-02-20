@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml;
@@ -12,9 +13,14 @@ namespace rss_feed.Services {
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(configPath);
             var root = configDocument.GetElementsByTagName("Config")[0];
-            var link = root["RssLink"].InnerText;
+
+            var linksNode = root["RssLinks"];
+            List<string> links = new List<string>();
+            foreach (XmlNode node in linksNode.ChildNodes) {
+                links.Add(node.InnerText);
+            }
             var updateRate = root["RefreshFrequency"].InnerText;
-            return new Config(link, updateRate);
+            return new Config(links.ToArray(), updateRate);
         }
     }
 }

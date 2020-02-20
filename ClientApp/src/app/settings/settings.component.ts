@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Subscription} from 'rxjs';
 import {ConfigModel} from '../models/config.model';
 import {ConfigService} from '../services/config.service';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
     selector: 'app-settings',
@@ -13,7 +13,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 export class SettingsComponent implements OnInit {
 
     private apiQuery: Subscription;
-    config: ConfigModel = {rssLink: null, refreshFrequency: null};
+    config: ConfigModel = {rssLinks: null, refreshFrequency: null};
 
     settingsForm: FormGroup = new FormGroup({
         link: new FormControl('', [
@@ -21,12 +21,13 @@ export class SettingsComponent implements OnInit {
             Validators.pattern('(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w.,@?^=%&amp;:/~+#-]*[\\w@?^=%&amp;/~+#-])?')
         ]),
         refreshRate: new FormControl('', [
-            Validators.required,
             Validators.pattern('[0-9]*\.?[0-9]+')
         ])
     });
 
-    constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl, private configService: ConfigService) {
+    constructor(private http: HttpClient,
+                @Inject('BASE_URL') private baseUrl,
+                private configService: ConfigService) {
     }
 
     async ngOnInit() {
@@ -34,12 +35,24 @@ export class SettingsComponent implements OnInit {
         console.log(this.config);
     }
 
+    delete(index) {
+        this.config.rssLinks.splice(index, 1);
+        this.updateConfig();
+    }
+
     saveConfig() {
-        console.log(this.config);
-        this.config = {rssLink: this.settingsForm.value.link, refreshFrequency: this.settingsForm.value.refreshRate};
+        if (this.config.rssLinks.indexOf(this.settingsForm.value.link) === -1) {
+            this.config.rssLinks.push(this.settingsForm.value.link);
+        }
+        this.config.refreshFrequency = this.settingsForm.value.refreshRate ?
+            this.settingsForm.value.refreshRate : this.config.refreshFrequency;
+        this.updateConfig();
+    }
+
+    updateConfig() {
         this.apiQuery = this.http.put(this.baseUrl + 'api/settings', {
-            RssLink: this.settingsForm.value.link,
-            RefreshFrequency: this.settingsForm.value.refreshRate
+            RssLinks: this.config.rssLinks,
+            RefreshFrequency: this.config.refreshFrequency
         }).subscribe(res => {
             console.log(res);
             this.configService.saveSettings(this.config);
